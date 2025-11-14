@@ -1,0 +1,66 @@
+local library = loadstring(game:HttpGet(('https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wall%20v3')))()
+
+local w = library:CreateWindow("UGC😈SCRIPT")
+
+local b = w:CreateFolder("RECOLECTAR ")
+local e = w:CreateFolder("TERMINAR ")
+
+-- Variable para controlar el teletransporte continuo
+local teleporting = false
+local teleportObjectName = nil
+
+-- Función para teleportar al jugador a un objeto
+local function teleportToObject(objectName)
+    local object = game.Workspace:FindFirstChild(objectName)
+    if object then
+        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(object.CFrame)
+    else
+        warn("Objeto no encontrado: " .. objectName)
+    end
+end
+
+-- Función para iniciar o detener el teletransporte continuo
+local function toggleTeleporting(objectName)
+    teleportObjectName = objectName
+    teleporting = not teleporting
+
+    if teleporting then
+        while teleporting do
+            teleportToObject(teleportObjectName)
+            wait(0.5) -- Espera menos de medio segundo entre teletransportes
+        end
+    end
+end
+
+b:Button("INICIAR", function()
+    local objectNames = {"robot"}
+    for _, objectName in ipairs(objectNames) do
+        toggleTeleporting(objectName)
+    end
+    
+    game:GetService("StarterGui"):SetCore("SendNotification", { 
+        Title = "TELETRANSPORTE ACTIVADO";
+        Text = "Iniciando teletransporte continuo para el objeto robot.";
+        Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"
+    })
+end)
+
+e:Button("INICIAR", function()
+    local player = game:GetService("Players").LocalPlayer
+    local destination = game.Workspace:FindFirstChild("WithdrawalZone") -- ubicación 
+
+    if destination then
+        player.Character:SetPrimaryPartCFrame(destination.CFrame) -- Teletransporta al jugador
+        game:GetService("StarterGui"):SetCore("SendNotification", { 
+            Title = "TELETRANSPORTADO";
+            Text = "Has sido teletransportado a la ubicación deseada.";
+            Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"
+        })
+    else
+        game:GetService("StarterGui"):SetCore("SendNotification", { 
+            Title = "ERROR";
+            Text = "No se encontró el destino.";
+            Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"
+        })
+    end
+end)
