@@ -1,46 +1,50 @@
+-- Variables para controlar la búsqueda
+local isSearching = false
+
+local function teleportToRandomObject(objectName)
+    while isSearching do
+        -- Obtiene todos los objetos en el workspace que coinciden con el nombre
+        local objects = {}
+        for _, obj in pairs(game.Workspace:GetChildren()) do
+            if obj.Name == objectName then
+                table.insert(objects, obj)
+            end
+        end
+
+        if #objects > 0 then
+            -- Teletransporta a un objeto aleatorio
+            local randomObject = objects[math.random(1, #objects)]
+            game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(randomObject.CFrame)
+            wait(0.3) -- No hay espera entre teleportaciones
+        else
+            break -- Sale del bucle si no encuentra más objetos
+        end
+    end
+end
+
 local library = loadstring(game:HttpGet(('https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wall%20v3')))()
 
 local w = library:CreateWindow("UGC😈SCRIPT")
 
 local b = w:CreateFolder("RECOLECTAR ")
-local e = w:CreateFolder("TERMINAR ")
-
--- Variable para controlar el teletransporte continuo
-local teleporting = false
-local teleportObjectName = nil
-
--- Función para teleportar al jugador a un objeto
-local function teleportToObject(objectName)
-    local object = game.Workspace:FindFirstChild(objectName)
-    if object then
-        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(object.CFrame)
-    else
-        warn("Objeto no encontrado: " .. objectName)
-    end
-end
-
--- Función para iniciar o detener el teletransporte continuo
-local function toggleTeleporting(objectName)
-    teleportObjectName = objectName
-    teleporting = not teleporting
-
-    if teleporting then
-        while teleporting do
-            teleportToObject(teleportObjectName)
-            wait(0.5) -- Espera menos de medio segundo entre teletransportes
-        end
-    end
-end
+local a = w:CreateFolder("DETENER ")
+local e = w:CreateFolder("ENTREGAR ")
 
 b:Button("INICIAR", function()
-    local objectNames = {"robot"}
-    for _, objectName in ipairs(objectNames) do
-        toggleTeleporting(objectName)
-    end
-    
+    isSearching = true
     game:GetService("StarterGui"):SetCore("SendNotification", { 
-        Title = "TELETRANSPORTE ACTIVADO";
-        Text = "Iniciando teletransporte continuo para el objeto robot.";
+        Title = "TELETRANSPORTE ACTIVADO",
+        Text = "Iniciando teletransporte continuo para el objeto robot.",
+        Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"
+    })
+    teleportToRandomObject("robot") -- Iniciar el teletransporte continuo
+end)
+
+a:Button("INICIAR", function()
+    isSearching = false -- Detener el teletransporte continuo
+    game:GetService("StarterGui"):SetCore("SendNotification", { 
+        Title = "TELETRANSPORTE DETENIDO",
+        Text = "Has detenido el teletransporte continuo.",
         Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"
     })
 end)
@@ -52,14 +56,14 @@ e:Button("INICIAR", function()
     if destination then
         player.Character:SetPrimaryPartCFrame(destination.CFrame) -- Teletransporta al jugador
         game:GetService("StarterGui"):SetCore("SendNotification", { 
-            Title = "TELETRANSPORTADO";
-            Text = "Has sido teletransportado a la ubicación deseada.";
+            Title = "TELETRANSPORTADO",
+            Text = "Has sido teletransportado a la ubicación deseada.",
             Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"
         })
     else
         game:GetService("StarterGui"):SetCore("SendNotification", { 
-            Title = "ERROR";
-            Text = "No se encontró el destino.";
+            Title = "ERROR",
+            Text = "No se encontró el destino.",
             Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"
         })
     end
