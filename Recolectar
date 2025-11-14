@@ -15,7 +15,7 @@ local function teleportToRandomObject(objectName)
             -- Teletransporta a un objeto aleatorio
             local randomObject = objects[math.random(1, #objects)]
             game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(randomObject.CFrame)
-            wait(0.3) -- No hay espera entre teleportaciones
+            wait(0.4) -- Menos de medio segundo entre teletransporte
         else
             break -- Sale del bucle si no encuentra más objetos
         end
