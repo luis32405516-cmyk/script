@@ -1,9 +1,10 @@
--- Variables para controlar la búsqueda
+-- Variables para controlar la búsqueda y el teletransporte
 local isSearching = false
+local isTeleporting = false -- Nuevo estado para el teletransporte
+local teleportInterval = 40 -- Tiempo en segundos entre teletransportes
 
 local function teleportToRandomObject(objectName)
     while isSearching do
-        -- Obtiene todos los objetos en el workspace que coinciden con el nombre
         local objects = {}
         for _, obj in pairs(game.Workspace:GetChildren()) do
             if obj.Name == objectName then
@@ -12,18 +13,16 @@ local function teleportToRandomObject(objectName)
         end
 
         if #objects > 0 then
-            -- Teletransporta a un objeto aleatorio
             local randomObject = objects[math.random(1, #objects)]
             game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(randomObject.CFrame)
-            wait(0.4) -- Menos de medio segundo entre teletransporte
+            wait(0.4)
         else
-            break -- Sale del bucle si no encuentra más objetos
+            break
         end
     end
 end
 
 local library = loadstring(game:HttpGet(('https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wall%20v3')))()
-
 local w = library:CreateWindow("UGC😈SCRIPT")
 
 local b = w:CreateFolder("RECOLECTAR ")
@@ -37,11 +36,12 @@ b:Button("INICIAR", function()
         Text = "Iniciando teletransporte continuo para el objeto robot.",
         Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"
     })
-    teleportToRandomObject("robot") -- Iniciar el teletransporte continuo
+    teleportToRandomObject("robot")
 end)
 
 a:Button("INICIAR", function()
     isSearching = false -- Detener el teletransporte continuo
+    isTeleporting = false -- Asegurarse de que el teletransporte a la zona de entrega se detenga
     game:GetService("StarterGui"):SetCore("SendNotification", { 
         Title = "TELETRANSPORTE DETENIDO",
         Text = "Has detenido el teletransporte continuo.",
@@ -51,15 +51,20 @@ end)
 
 e:Button("INICIAR", function()
     local player = game:GetService("Players").LocalPlayer
-    local destination = game.Workspace:FindFirstChild("WithdrawalZone") -- ubicación 
+    local destination = game.Workspace:FindFirstChild("WithdrawalZone") -- ubicación
 
     if destination then
-        player.Character:SetPrimaryPartCFrame(destination.CFrame) -- Teletransporta al jugador
+        isTeleporting = true -- Iniciar estado de teletransporte automático
         game:GetService("StarterGui"):SetCore("SendNotification", { 
-            Title = "TELETRANSPORTADO",
-            Text = "Has sido teletransportado a la ubicación deseada.",
+            Title = "TELETRANSPORTE ACTIVADO",
+            Text = "Teletransportando automáticamente cada 40 segundos a la ubicación deseada.",
             Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"
         })
+        
+        while isTeleporting do
+            player.Character:SetPrimaryPartCFrame(destination.CFrame) -- Teletransporta al jugador
+            wait(teleportInterval) -- Espera 40 segundos antes de teletransportar nuevamente
+        end
     else
         game:GetService("StarterGui"):SetCore("SendNotification", { 
             Title = "ERROR",
